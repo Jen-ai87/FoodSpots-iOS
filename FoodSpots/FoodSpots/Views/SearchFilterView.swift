@@ -15,7 +15,7 @@ struct SearchFilterView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 0) {
-
+                    
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.secondary)
@@ -31,6 +31,7 @@ struct SearchFilterView: View {
                     .padding(.top, 16)
                     .padding(.bottom, 24)
 
+                    
                     sectionHeader("Minimum Rating")
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
@@ -57,11 +58,30 @@ struct SearchFilterView: View {
                         .padding(.horizontal, 20)
                     }
                     .padding(.bottom, 24)
+
                     
                     sectionHeader("Cuisine Type")
                     cuisineGrid
                         .padding(.bottom, 24)
 
+                    
+                    let results = viewModel.filteredRestaurants
+                    Text("Results (\(results.count))")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 12)
+
+                    LazyVStack(spacing: 16) {
+                        ForEach(results) { restaurant in
+                            RestaurantCardView(
+                                restaurant: restaurant,
+                                onFavoriteTap: { viewModel.toggleFavorite(restaurant) }
+                            )
+                            .padding(.horizontal, 20)
+                        }
+                    }
+                    .padding(.bottom, 20)
                 }
             }
         }
@@ -69,7 +89,7 @@ struct SearchFilterView: View {
         .navigationBarTitleDisplayMode(.large)
         .navigationBarBackButtonHidden(false)
         .onDisappear {
-            // optional: reset filters later
+            
         }
     }
 
@@ -100,7 +120,6 @@ struct SearchFilterView: View {
         .padding(.horizontal, 20)
     }
 
-    
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(.headline)
