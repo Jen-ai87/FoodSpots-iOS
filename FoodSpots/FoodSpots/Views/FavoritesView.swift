@@ -41,6 +41,26 @@ struct FavoritesView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 16)
                 .padding(.bottom, 20)
+                
+                LazyVStack(spacing: 16) {
+                    ForEach(viewModel.favorites) { restaurant in
+                        RestaurantCardView(
+                            restaurant: restaurant,
+                            onTap: { selectedRestaurant = restaurant },
+                            onFavoriteTap: { viewModel.toggleFavorite(restaurant) },
+                            showDeleteButton: true,
+                            onDeleteTap: { viewModel.toggleFavorite(restaurant) }
+                        )
+                        .padding(.horizontal, 20)
+                        .transition(.asymmetric(
+                            insertion: .scale.combined(with: .opacity),
+                            removal: .opacity
+                        ))
+                    }
+                }
+                .animation(.easeInOut(duration: 0.3), value: viewModel.favorites.count)
+                .padding(.bottom, 20)
+
             }
         }
     }
