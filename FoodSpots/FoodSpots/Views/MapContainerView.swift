@@ -28,8 +28,31 @@ struct MapContainerView: View {
 
     @ViewBuilder
     private var mapView: some View {
-        Map(position: $position) { }
-            .mapStyle(.standard)
-            .ignoresSafeArea()
+        Map(position: $position) {
+            UserAnnotation()
+            ForEach(viewModel.filteredRestaurants) { restaurant in
+                Annotation("", coordinate: restaurant.coordinate, anchor: .bottom) {
+                    pinButton(for: restaurant)
+                }
+            }
+        }
+        .mapStyle(.standard)
+        .ignoresSafeArea()
     }
+    private func pinButton(for restaurant: Restaurant) -> some View {
+        Button(action: {
+            selectedRestaurant = restaurant
+        }) {
+            ZStack {
+                Circle()
+                    .fill(Color.foodOrange)
+                    .frame(width: 36, height: 36)
+                    .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 2)
+                Image(systemName: "fork.knife")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+            }
+        }
+    }
+
 }
