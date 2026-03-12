@@ -1,3 +1,7 @@
 import SwiftUI
 
-struct FavoritesView: View {}
+struct FavoritesView: View {
+    var body: some View {
+        
+    }
+}

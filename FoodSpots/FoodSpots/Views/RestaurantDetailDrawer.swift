@@ -1,3 +1,7 @@
 import SwiftUI
 
-struct RestaurantDetailDrawer: View {}
+struct RestaurantDetailDrawer: View {
+    var body: some View {
+        
+    }
+}

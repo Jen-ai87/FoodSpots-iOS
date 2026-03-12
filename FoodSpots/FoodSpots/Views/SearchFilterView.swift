@@ -1,3 +1,7 @@
 import SwiftUI
 
-struct SearchFilterView: View { }
+struct SearchFilterView: View {
+    var body: some View {
+        
+    }
+}

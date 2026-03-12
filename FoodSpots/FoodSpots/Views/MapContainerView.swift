@@ -1,3 +1,7 @@
 import SwiftUI
 
-struct MapContainerView: View {}
+struct MapContainerView: View {
+    var body: some View {
+        
+    }
+}
