@@ -68,6 +68,17 @@ class RestaurantViewModel: NSObject, ObservableObject, CLLocationManagerDelegate
         _ = db.insert(restaurant)
         loadRestaurants()
     }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        locationStatus = manager.authorizationStatus
+        if manager.authorizationStatus == .authorizedWhenInUse ||
+           manager.authorizationStatus == .authorizedAlways {
+            locationManager.startUpdatingLocation()
+        }
+    }
 
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        userLocation = locations.last
+    }
 
 }
