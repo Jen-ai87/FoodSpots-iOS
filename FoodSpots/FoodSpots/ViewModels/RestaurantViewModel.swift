@@ -25,7 +25,38 @@ class RestaurantViewModel: NSObject, ObservableObject, CLLocationManagerDelegate
         loadRestaurants()
     }
     
+    func requestLocation() {
+        locationManager.requestWhenInUseAuthorization()
+    }
+    
     func loadRestaurants() {
         restaurants = db.fetchAll()
     }
+    
+    var filteredRestaurants: [Restaurant] {
+        var list = restaurants
+
+        if selectedCuisine != "All" {
+            list = list.filter { $0.cuisineType == selectedCuisine }
+        }
+        if minimumRating > 0 {
+            list = list.filter { $0.rating >= minimumRating }
+        }
+        if !searchText.isEmpty {
+            list = list.filter {
+                $0.name.localizedCaseInsensitiveContains(searchText) ||
+                $0.cuisineType.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+
+        let loc = effectiveLocation
+        return list.sorted { $0.distance(from: loc) < $1.distance(from: loc) }
+    }
+    
+    var favorites: [Restaurant] {
+        restaurants.filter { $0.isFavorite }.sorted {
+            $0.distance(from: effectiveLocation) < $1.distance(from: effectiveLocation)
+        }
+    }
+
 }
