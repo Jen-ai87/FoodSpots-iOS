@@ -57,6 +57,11 @@ struct SearchFilterView: View {
                         .padding(.horizontal, 20)
                     }
                     .padding(.bottom, 24)
+                    
+                    sectionHeader("Cuisine Type")
+                    cuisineGrid
+                        .padding(.bottom, 24)
+
                 }
             }
         }
@@ -68,6 +73,34 @@ struct SearchFilterView: View {
         }
     }
 
+    @ViewBuilder
+    private var cuisineGrid: some View {
+        let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+        LazyVGrid(columns: columns, spacing: 10) {
+            ForEach(cuisines, id: \.self) { cuisine in
+                Button(action: {
+                    if viewModel.selectedCuisine == cuisine {
+                        viewModel.selectedCuisine = "All"
+                    } else {
+                        viewModel.selectedCuisine = cuisine
+                    }
+                }) {
+                    Text(cuisine)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(viewModel.selectedCuisine == cuisine ? Color.foodOrange : Color.white)
+                        .foregroundColor(viewModel.selectedCuisine == cuisine ? .white : .primary)
+                        .cornerRadius(12)
+                        .shadow(color: .black.opacity(0.06), radius: 3, x: 0, y: 1)
+                }
+            }
+        }
+        .padding(.horizontal, 20)
+    }
+
+    
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(.headline)
