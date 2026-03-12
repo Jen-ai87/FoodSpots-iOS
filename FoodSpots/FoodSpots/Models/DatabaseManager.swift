@@ -25,6 +25,28 @@ class DatabaseManager {
         }
     }
     
+    private func createTable() {
+        let sql = """
+            CREATE TABLE IF NOT EXISTS restaurants (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                cuisine_type TEXT NOT NULL,
+                description TEXT DEFAULT '',
+                address TEXT DEFAULT '',
+                latitude REAL NOT NULL DEFAULT 0,
+                longitude REAL NOT NULL DEFAULT 0,
+                rating REAL NOT NULL DEFAULT 0,
+                is_favorite INTEGER DEFAULT 0,
+                image_name TEXT DEFAULT ''
+            );
+        """
+        var stmt: OpaquePointer?
+        if sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK {
+            sqlite3_step(stmt)
+        }
+        sqlite3_finalize(stmt)
+    }
+    
     func fetchAll() -> [Restaurant] {
         var result: [Restaurant] = []
         let sql = "SELECT id, name, cuisine_type, description, address, latitude, longitude, rating, is_favorite, image_name FROM restaurants ORDER BY id;"
