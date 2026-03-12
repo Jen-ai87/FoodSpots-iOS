@@ -35,9 +35,18 @@ struct AddRestaurantView: View {
                 }
             }
             .navigationBarHidden(true)
+            .alert("Restaurant Added!", isPresented: $showSuccess) {
+                Button("OK") { resetForm() }
+            } message: {
+                Text("\(name) has been added to FoodSpots.")
+            }
+            .alert("Please fill in required fields.", isPresented: $showError) {
+                Button("OK") {}
+            }
         }
     }
 
+    
     private var headerSection: some View {
         HStack(spacing: 0) {
             Text("Add ")
@@ -55,9 +64,10 @@ struct AddRestaurantView: View {
         .padding(.bottom, 24)
     }
 
+    
     private var formContent: some View {
         VStack(alignment: .leading, spacing: 20) {
-
+            
             PhotosPicker(selection: $selectedPhoto, matching: .images, photoLibrary: .shared()) {
                 photoPlaceholder
             }
@@ -70,6 +80,7 @@ struct AddRestaurantView: View {
                 }
             }
 
+            
             formField(label: "Restaurant Name *") {
                 TextField("Enter restaurant name", text: $name)
                     .padding(14)
@@ -78,6 +89,7 @@ struct AddRestaurantView: View {
                     .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
             }
 
+            
             formField(label: "Description") {
                 ZStack(alignment: .topLeading) {
                     if description.isEmpty {
@@ -95,10 +107,12 @@ struct AddRestaurantView: View {
                 .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
             }
 
+            
             formField(label: "Cuisine Type *") {
                 cuisineSelector
             }
 
+            
             formField(label: "Address") {
                 TextField("Enter address", text: $address)
                     .padding(14)
@@ -107,6 +121,7 @@ struct AddRestaurantView: View {
                     .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
             }
 
+            
             HStack(spacing: 12) {
                 formField(label: "Latitude") {
                     TextField("43.6532", text: $latitudeText)
@@ -125,10 +140,47 @@ struct AddRestaurantView: View {
                         .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
                 }
             }
+
+            
+            formField(label: "Rating: \(String(format: "%.1f", rating))") {
+                HStack {
+                    ForEach(1...5, id: \.self) { star in
+                        Image(systemName: Double(star) <= rating ? "star.fill" : "star")
+                            .foregroundColor(.foodOrange)
+                            .font(.title2)
+                            .onTapGesture { rating = Double(star) }
+                    }
+                    Spacer()
+                    Text(String(format: "%.1f", rating))
+                        .font(.headline)
+                        .foregroundColor(.foodOrange)
+                }
+                .padding(.vertical, 4)
+
+                Slider(value: $rating, in: 1...5, step: 0.1)
+                    .tint(.foodOrange)
+            }
+
+            
+            Button(action: saveRestaurant) {
+                HStack {
+                    Image(systemName: "checkmark")
+                    Text("Save Restaurant")
+                        .fontWeight(.semibold)
+                }
+                .foregroundColor(isFormValid ? .white : Color.white.opacity(0.6))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(isFormValid ? Color.foodOrange : Color.gray)
+                .cornerRadius(14)
+            }
+            .disabled(!isFormValid)
+            .padding(.bottom, 30)
         }
         .padding(.horizontal, 20)
     }
 
+    
     private var photoPlaceholder: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 14)
@@ -170,6 +222,7 @@ struct AddRestaurantView: View {
         .frame(height: 140)
     }
 
+    
     private var cuisineSelector: some View {
         let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
         return LazyVGrid(columns: columns, spacing: 10) {
@@ -192,6 +245,7 @@ struct AddRestaurantView: View {
         }
     }
 
+    
     @ViewBuilder
     private func formField<Content: View>(label: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -201,5 +255,38 @@ struct AddRestaurantView: View {
                 .foregroundColor(.primary)
             content()
         }
+    }
+
+    private func saveRestaurant() {
+        guard isFormValid else { showError = true; return }
+        let lat = Double(latitudeText) ?? viewModel.defaultLocation.coordinate.latitude
+        let lon = Double(longitudeText) ?? viewModel.defaultLocation.coordinate.longitude
+
+        let newRestaurant = Restaurant(
+            id: 0,
+            name: name.trimmingCharacters(in: .whitespaces),
+            cuisineType: selectedCuisine,
+            restaurantDescription: description,
+            address: address.isEmpty ? "Toronto, ON" : address,
+            latitude: lat,
+            longitude: lon,
+            rating: rating,
+            isFavorite: false,
+            imageName: ""
+        )
+        viewModel.addRestaurant(newRestaurant)
+        showSuccess = true
+    }
+
+    private func resetForm() {
+        name = ""
+        description = ""
+        address = ""
+        selectedCuisine = ""
+        rating = 3.0
+        latitudeText = ""
+        longitudeText = ""
+        selectedPhoto = nil
+        selectedImage = nil
     }
 }
