@@ -10,6 +10,65 @@ struct HomeView: View {
         
     }
     
+    private var headerSection: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 4) {
+                Image(systemName: "mappin.circle.fill")
+                    .foregroundColor(.foodOrange)
+                    .font(.subheadline)
+                Text("Toronto, ON")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+
+            HStack(spacing: 0) {
+                Text("Discover ")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.primary)
+                Text("Nearby")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.foodOrange)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.top, 16)
+        .padding(.bottom, 12)
+    }
+    
+    private var searchBar: some View {
+        HStack(spacing: 10) {
+            Button(action: { showSearch = true }) {
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.secondary)
+                    Text("Search restaurants...")
+                        .foregroundColor(Color(uiColor: .placeholderText))
+                        .font(.body)
+                    Spacer()
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(Color.white)
+                .cornerRadius(12)
+                .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
+            }
+
+            Button(action: { showSearch = true }) {
+                Image(systemName: "slider.horizontal.3")
+                    .foregroundColor(.white)
+                    .font(.system(size: 17, weight: .semibold))
+                    .frame(width: 48, height: 48)
+                    .background(Color.foodOrange)
+                    .cornerRadius(12)
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 14)
+    }
+    
     
     private var cuisineFilter: some View {
         ScrollView(.horizontal, showsIndicators: false) {
