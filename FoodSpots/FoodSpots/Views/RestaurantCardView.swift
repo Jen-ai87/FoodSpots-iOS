@@ -26,6 +26,7 @@ struct RestaurantCardView: View {
                     cuisineIcon
                         .frame(height: 180)
 
+                    
                     Text(distanceText)
                         .font(.caption)
                         .fontWeight(.semibold)
@@ -37,6 +38,7 @@ struct RestaurantCardView: View {
                         .padding(10)
                 }
 
+                
                 HStack(spacing: 6) {
                     if showDeleteButton {
                         Button(action: { onDeleteTap?() }) {
@@ -58,6 +60,7 @@ struct RestaurantCardView: View {
                 .padding(10)
             }
 
+            
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(restaurant.name)
@@ -98,6 +101,7 @@ struct RestaurantCardView: View {
         .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 3)
         .onTapGesture { onTap?() }
     }
+
     @ViewBuilder
     private var cuisineGradient: some View {
         let colors = gradientColors(for: restaurant.cuisineType)
@@ -153,7 +157,36 @@ struct RestaurantCardView: View {
         default:          return "fork.knife"
         }
     }
-
-
 }
 
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners))
+    }
+}
+
+struct RoundedCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted))
+        var hexValue: UInt64 = 0
+        scanner.scanHexInt64(&hexValue)
+        let r = Double((hexValue & 0xFF0000) >> 16) / 255.0
+        let g = Double((hexValue & 0x00FF00) >> 8) / 255.0
+        let b = Double(hexValue & 0x0000FF) / 255.0
+        self.init(red: r, green: g, blue: b)
+    }
+}
