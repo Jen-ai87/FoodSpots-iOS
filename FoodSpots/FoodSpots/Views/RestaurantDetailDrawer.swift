@@ -60,7 +60,34 @@ struct RestaurantDetailDrawer: View {
             .padding(.horizontal, 20)
             .padding(.top, 14)
             .padding(.bottom, 14)
+
+            Button(action: copyAddress) {
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "mappin.circle.fill")
+                        .font(.title3)
+                        .foregroundColor(.foodOrange)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(restaurant.address)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .multilineTextAlignment(.leading)
+                        Text("Tap to copy address")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                }
+                .padding(14)
+                .background(Color.foodBackground)
+                .cornerRadius(12)
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
         }
         .background(Color.white)
+    }
+
+    private func copyAddress() {
+        UIPasteboard.general.string = restaurant.address
     }
 }
