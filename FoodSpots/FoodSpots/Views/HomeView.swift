@@ -6,8 +6,31 @@ struct HomeView: View {
     @State private var selectedRestaurant: Restaurant?
     private let cuisines = Restaurant.cuisineTypes
     
+    //TODO: Faraz to work on RestaurantDetailDrawer
     var body: some View {
-        
+        NavigationStack {
+            ZStack(alignment: .top) {
+                Color.foodBackground.ignoresSafeArea()
+
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        headerSection
+                        searchBar
+                        cuisineFilter
+                        restaurantList
+                    }
+                }
+            }
+            .navigationBarHidden(true)
+            .navigationDestination(isPresented: $showSearch) {
+                SearchFilterView()
+            }
+            .sheet(item: $selectedRestaurant) { restaurant in
+                RestaurantDetailDrawer(restaurant: restaurant)
+                    .presentationDetents([.fraction(0.52)])
+                    .presentationDragIndicator(.hidden)
+            }
+        }
     }
     
     private var headerSection: some View {
