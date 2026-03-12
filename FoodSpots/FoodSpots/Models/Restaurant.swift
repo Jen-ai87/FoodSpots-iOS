@@ -22,6 +22,14 @@ struct Restaurant: Identifiable, Codable, Hashable {
         return location.distance(from: loc) / 1609.34
     }
     
+    static func == (lhs: Restaurant, rhs: Restaurant) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
     static let cuisineTypes = [
         "All", "Italian", "Japanese", "Mexican",
         "American", "Chinese", "Indian", "Thai", "French", "Korean"
