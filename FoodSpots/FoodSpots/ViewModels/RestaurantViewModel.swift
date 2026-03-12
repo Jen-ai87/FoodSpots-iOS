@@ -13,4 +13,19 @@ class RestaurantViewModel: NSObject, ObservableObject, CLLocationManagerDelegate
     
     private let locationManager = CLLocationManager()
     private let db = DatabaseManager.shared
+    
+    let defaultLocation = CLLocation(latitude: 43.6532, longitude: -79.3832)
+    
+    var effectiveLocation: CLLocation { userLocation ?? defaultLocation }
+    
+    override init() {
+        super.init()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        loadRestaurants()
+    }
+    
+    func loadRestaurants() {
+        restaurants = db.fetchAll()
+    }
 }
