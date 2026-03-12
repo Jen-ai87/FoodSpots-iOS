@@ -10,18 +10,24 @@ struct FavoritesView: View {
                 Color.foodBackground.ignoresSafeArea()
 
                 if viewModel.favorites.isEmpty {
-                    Text("No favorites yet")
+                    emptyState
                 } else {
                     content
                 }
             }
             .navigationBarHidden(true)
+            .sheet(item: $selectedRestaurant) { restaurant in
+                RestaurantDetailDrawer(restaurant: restaurant)
+                    .presentationDetents([.fraction(0.52)])
+                    .presentationDragIndicator(.hidden)
+            }
         }
     }
 
     private var content: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
+                
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 0) {
                         Text("My ")
@@ -41,7 +47,7 @@ struct FavoritesView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 16)
                 .padding(.bottom, 20)
-                
+
                 LazyVStack(spacing: 16) {
                     ForEach(viewModel.favorites) { restaurant in
                         RestaurantCardView(
@@ -60,8 +66,24 @@ struct FavoritesView: View {
                 }
                 .animation(.easeInOut(duration: 0.3), value: viewModel.favorites.count)
                 .padding(.bottom, 20)
-
             }
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "heart.slash.fill")
+                .font(.system(size: 64))
+                .foregroundColor(.foodOrange.opacity(0.4))
+            Text("No favorites yet")
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
+            Text("Tap the heart icon on any restaurant to save it here.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
         }
     }
 }
