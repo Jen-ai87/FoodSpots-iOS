@@ -58,5 +58,16 @@ class RestaurantViewModel: NSObject, ObservableObject, CLLocationManagerDelegate
             $0.distance(from: effectiveLocation) < $1.distance(from: effectiveLocation)
         }
     }
+    
+    func toggleFavorite(_ restaurant: Restaurant) {
+        db.toggleFavorite(id: restaurant.id, newValue: !restaurant.isFavorite)
+        loadRestaurants()
+    }
+
+    func addRestaurant(_ restaurant: Restaurant) {
+        _ = db.insert(restaurant)
+        loadRestaurants()
+    }
+
 
 }
