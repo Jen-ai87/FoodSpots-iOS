@@ -12,7 +12,7 @@ struct RestaurantDetailDrawer: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-
+            
             Capsule()
                 .fill(Color.secondary.opacity(0.3))
                 .frame(width: 36, height: 4)
@@ -20,6 +20,7 @@ struct RestaurantDetailDrawer: View {
                 .padding(.top, 10)
                 .padding(.bottom, 16)
 
+            
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(restaurant.name)
@@ -41,6 +42,7 @@ struct RestaurantDetailDrawer: View {
 
             Divider().padding(.horizontal, 20)
 
+            
             HStack(spacing: 16) {
                 HStack(spacing: 5) {
                     Image(systemName: "star.fill")
@@ -61,6 +63,7 @@ struct RestaurantDetailDrawer: View {
             .padding(.top, 14)
             .padding(.bottom, 14)
 
+            
             Button(action: copyAddress) {
                 HStack(alignment: .top, spacing: 12) {
                     Image(systemName: "mappin.circle.fill")
@@ -83,11 +86,36 @@ struct RestaurantDetailDrawer: View {
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
+
+            
+            Button(action: openInMaps) {
+                HStack {
+                    Image(systemName: "location.fill")
+                    Text("Get Directions")
+                        .fontWeight(.semibold)
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(Color.foodOrange)
+                .cornerRadius(14)
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 10)
         }
         .background(Color.white)
     }
 
     private func copyAddress() {
         UIPasteboard.general.string = restaurant.address
+    }
+
+    private func openInMaps() {
+        let placemark = MKPlacemark(coordinate: restaurant.coordinate)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = restaurant.name
+        mapItem.openInMaps(launchOptions: [
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+        ])
     }
 }
