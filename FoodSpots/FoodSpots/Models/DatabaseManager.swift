@@ -8,7 +8,8 @@ class DatabaseManager {
 
     private init() {
         openDatabase()
-
+        createTable()
+        seedDataIfNeeded()
     }
 
     deinit {
